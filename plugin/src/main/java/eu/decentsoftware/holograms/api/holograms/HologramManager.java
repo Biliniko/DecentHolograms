@@ -54,7 +54,8 @@ public class HologramManager extends Ticked {
         this.decentHolograms = decentHolograms;
         this.register();
 
-        S.async(this::reload); // Reload when the worlds are ready
+        // Keep hologram restore on the server thread to avoid packet ordering issues.
+        S.sync(this::reload, 1L);
     }
 
     @Override
@@ -173,7 +174,7 @@ public class HologramManager extends Ticked {
     public synchronized void reload() {
         this.destroy();
         this.loadHolograms();
-        S.async(this::updateVisibility);
+        S.sync(this::updateVisibility, 1L);
     }
 
     private void loadHolograms() {

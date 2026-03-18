@@ -61,7 +61,7 @@ jar {
 }
 
 shadowJar {
-    archiveFileName.set("DecentHolograms-${version}.jar")
+    archiveFileName.set("DecentHolograms-${version}-arclight-sync-hotfix.jar")
 
     relocate "org.bstats", "eu.decentsoftware.holograms.metrics"
     relocate "de.tr7zw.changeme.nbtapi", "eu.decentsoftware.holograms.libs.nbtapi"
