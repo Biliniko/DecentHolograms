@@ -81,6 +81,19 @@ public class HologramManager extends Ticked {
         }
     }
 
+    /**
+     * Force a full client-side rebuild of every hologram visible to the player.
+     *
+     * <p>This is used after respawn/cross-world travel where the client may keep
+     * stale armor stand state even though the hologram should be re-rendered.</p>
+     *
+     * @param player Given player.
+     */
+    public void refreshVisibility(@NonNull Player player) {
+        hideAll(player);
+        updateVisibility(player);
+    }
+
     public void updateVisibility(@NonNull Player player, @NonNull Hologram hologram) {
         if (hologram.isDisabled()) {
             return;

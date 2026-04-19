@@ -21,9 +21,10 @@ public class Ticker {
         this.ticks = new AtomicLong(0);
         this.tickedObjects = new ConcurrentHashMap<>();
         this.performingTick = false;
-        this.taskId = S.asyncTask(() -> {
+        // Ticked objects touch Bukkit state and send packets, so they must stay on the server thread.
+        this.taskId = S.syncTask(() -> {
             if (!performingTick) tick();
-        }, 1L, 5L).getTaskId();
+        }, 1L).getTaskId();
     }
 
     /**

@@ -8,6 +8,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerChangedWorldEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
@@ -49,15 +50,25 @@ public class PlayerListener implements Listener {
     @EventHandler
     public void onRespawn(PlayerRespawnEvent e) {
         if (Settings.UPDATE_VISIBILITY_ON_TELEPORT) {
-            S.sync(() -> decentHolograms.getHologramManager().hideAll(e.getPlayer()));
+            Player player = e.getPlayer();
+            S.sync(() -> decentHolograms.getHologramManager().hideAll(player));
+            S.sync(() -> decentHolograms.getHologramManager().refreshVisibility(player), 2L);
         }
     }
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void onTeleport(PlayerTeleportEvent e) {
         if (Settings.UPDATE_VISIBILITY_ON_TELEPORT) {
-            S.sync(() -> decentHolograms.getHologramManager().hideAll(e.getPlayer()));
+            Player player = e.getPlayer();
+            S.sync(() -> decentHolograms.getHologramManager().hideAll(player));
+            S.sync(() -> decentHolograms.getHologramManager().refreshVisibility(player), 2L);
         }
+    }
+
+    @EventHandler(priority = EventPriority.MONITOR)
+    public void onChangedWorld(PlayerChangedWorldEvent e) {
+        Player player = e.getPlayer();
+        S.sync(() -> decentHolograms.getHologramManager().refreshVisibility(player), 1L);
     }
 
 }
